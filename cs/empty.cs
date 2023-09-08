@@ -1,3 +1,3 @@
 namespace foo.foo;
 
-public class empty {}
+public class Empty {}
