@@ -1,7 +1,7 @@
 <Project>
 	<ItemGroup>
-		<WasiNativeFileReference Include="$(MSBuildThisFileDirectory)\..\add.c" />
-		<WasiNativeFileReference Include="$(MSBuildThisFileDirectory)\..\adder.c" />
+		<_WasmNativeFileForLinking Include="$(MSBuildThisFileDirectory)\..\add.c" />
+		<_WasmNativeFileForLinking Include="$(MSBuildThisFileDirectory)\..\adder.c" />
 		<!-- <_WasiSdkClangArgs Include="-I&quot;$([System.String]::Copy('$(MSBuildThisFileDirectory)..\wit\generated').Replace('\','/'))&quot;" /> -->
 	</ItemGroup>
 </Project>
