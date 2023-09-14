@@ -41,7 +41,21 @@ To compose a calculator component with an add operator, run the following:
 (cd command && cargo component build --release)
 wasm-tools compose calculator/target/wasm32-wasi/release/calculator.wasm -d adder/target/wasm32-wasi/release/adder.wasm -o composed.wasm
 wasm-tools compose command/target/wasm32-wasi/release/command.wasm -d composed.wasm -o command.wasm
+
+# dotnet 7
+(cd Adder_CS && dotnet build)
+wasm-tools component embed --world adder wit/calculator.wit Adder_CS/bin/Debug/net7.0/Adder_CS.wasm -o main.embed.wasm 
+wasm-tools component new main.embed.wasm --adapt wasi_snapshot_preview1.reactor.wasm -o main.component.wasm
+wasm-tools validate main.component.wasm --features component-model
+wasm-tools compose calculator/target/wasm32-wasi/release/calculator.wasm -d main.component.wasm -o composed.wasm
+wasm-tools compose command/target/wasm32-wasi/release/command.wasm -d composed.wasm -o command.wasm
+
+
+# dotnet 8
+wasm-tools component embed --world adder wit/calculator.wit Adder_CS/bin/Debug/net8.0/wasi-wasm/AppBundle/Adder_CS.wasm -o main.embed.wasm 
 ```
+
+this requires this wasmtime https://github.com/bytecodealliance/wasmtime/commit/134dddc built by cargo build --features component-model (don't forget git submodule update --init) and the snapshot preivew files from https://github.com/bytecodealliance/cargo-component/commit/822308cd2cd87cae6c766983d5619b17898f6dbc (which should match the version of cargo component you have otherwise you will get errors see https://bytecodealliance.zulipchat.com/#narrow/stream/327223-wit-bindgen/topic/wit-bindgen.20cs.20and.20wasm.20tools )
 
 Now, run the component with wasmtime:
 
