@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RuntimeIdentifier>wasi-wasm</RuntimeIdentifier>
 		<WasmSingleFileBundle>true</WasmSingleFileBundle>
-		<PublishTrimmed>true</PublishTrimmed>
+		<!-- <PublishTrimmed>true</PublishTrimmed> -->
   </PropertyGroup>
 
   <Import Project="build\adder.targets"/>
