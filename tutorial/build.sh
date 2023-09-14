@@ -1,3 +1,5 @@
+set -e
+
 (cd Adder_CS && dotnet build)
 wasm-tools component embed --world adder wit/calculator.wit Adder_CS/bin/Debug/net8.0/wasi-wasm/AppBundle/Adder_CS.wasm -o main.embed.wasm 
 wasm-tools component new main.embed.wasm --adapt wasi_snapshot_preview1.reactor.wasm -o main.component.wasm
