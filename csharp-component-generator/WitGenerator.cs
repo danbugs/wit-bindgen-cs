@@ -72,41 +72,43 @@ private static string jsonToCSharp(string json)
     var function0 = interface0.Functions.GetValueOrDefault("add");
     var result0 = function0.Results[0];
 
+    var interfaceName = interface0.Name.ToUpperFirstLetter();
+    var functionName = function0.Name.ToUpperFirstLetter();
     var convertedTemplate =
 $@"
 // generated file
-namespace {interface0.Name};
+namespace {interfaceName};
 using System;
 using System.Linq;
 using System.Reflection;
 
-public interface I{interface0.Name}
+public interface I{interfaceName}
 {{
-    {witToCSharpType(result0.Type)} {function0.Name}({witToCSharpType(function0.Params[0].Type)} {function0.Params[0].Name}, {witToCSharpType(function0.Params[1].Type)} {function0.Params[1].Name});
+    {witToCSharpType(result0.Type)} {functionName}({witToCSharpType(function0.Params[0].Type)} {function0.Params[0].Name}, {witToCSharpType(function0.Params[1].Type)} {function0.Params[1].Name});
 }}
 
-public static class {interface0.Name}Helper
+public static class {interfaceName}Helper
 {{
-    private static I{interface0.Name} _currentImplementation;
+    private static I{interfaceName} _currentImplementation;
 
     public static void Main() {{ }}
 
-    static {interface0.Name}Helper()
+    static {interfaceName}Helper()
     {{
-        Type {interface0.Name}Type = Assembly.GetExecutingAssembly().GetTypes()
-                                .FirstOrDefault(t => t.GetInterface(""I{interface0.Name}"") != null && !t.IsInterface && !t.IsAbstract);
-        if ({interface0.Name}Type != null)
+        Type {interfaceName}Type = Assembly.GetExecutingAssembly().GetTypes()
+                                .FirstOrDefault(t => t.GetInterface(""I{interfaceName}"") != null && !t.IsInterface && !t.IsAbstract);
+        if ({interfaceName}Type != null)
         {{
-            _currentImplementation = (I{interface0.Name})Activator.CreateInstance({interface0.Name}Type);
+            _currentImplementation = (I{interfaceName})Activator.CreateInstance({interfaceName}Type);
         }}
     }}
 
-    public static {witToCSharpType(result0.Type)} Export_{function0.Name}({witToCSharpType(function0.Params[0].Type)} {function0.Params[0].Name}, {witToCSharpType(function0.Params[1].Type)} {function0.Params[1].Name})
+    public static {witToCSharpType(result0.Type)} Export_{functionName}({witToCSharpType(function0.Params[0].Type)} {function0.Params[0].Name}, {witToCSharpType(function0.Params[1].Type)} {function0.Params[1].Name})
     {{
         if (_currentImplementation == null)
-            throw new InvalidOperationException(""No implementation found for I{interface0.Name}."");
+            throw new InvalidOperationException(""No implementation found for I{interfaceName}."");
 
-        return _currentImplementation.{function0.Name}({function0.Params[0].Name}, {function0.Params[1].Name});
+        return _currentImplementation.{functionName}({function0.Params[0].Name}, {function0.Params[1].Name});
     }}
 }}
 ";
@@ -140,6 +142,8 @@ private static string jsonToC(string json, string worldName, string projectName)
     var packageNameSplit2 = packageNameSplit[0] + "_" + packageNameSplit1[0];
     Console.WriteLine(packageNameSplit2);
 
+    var interfaceName = interface0.Name.ToUpperFirstLetter();
+    var functionName = function0.Name.ToUpperFirstLetter();
     var convertedTemplate =
 $@"
 // generated file
@@ -163,7 +167,7 @@ void ensure_dotnet_started() {{
 {{
     ensure_dotnet_started();
 
-	MonoMethod* method = lookup_dotnet_method(""{projectName}"", ""{interface0.Name}"", ""{interface0.Name}Helper"", ""Export_{function0.Name}"", -1);
+	MonoMethod* method = lookup_dotnet_method(""{projectName}"", ""{interfaceName}"", ""{interfaceName}Helper"", ""Export_{functionName}"", -1);
     void* method_params[] = {{ &{function0.Params[0].Name}, &{function0.Params[1].Name} }};
     MonoObject* exception;
     MonoObject* result;
@@ -256,4 +260,17 @@ private static string witToCType(string witType){
 
     return "";
 }
+
+public static string ToUpperFirstLetter(this string source)
+{
+    if (string.IsNullOrEmpty(source))
+        return string.Empty;
+    // convert to char array of the string
+    char[] letters = source.ToCharArray();
+    // upper case the first char
+    letters[0] = char.ToUpper(letters[0]);
+    // return the array made of the new char array
+    return new string(letters);
 }
+}
+

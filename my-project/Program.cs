@@ -1,9 +1,9 @@
-﻿using add;
+﻿using Add;
 
-public class UserAdderImpl : Iadd 
+public class UserAdderImpl : IAdd 
 {
-    public uint add(uint a, uint b) 
+    public uint Add(uint a, uint b) 
     {
-        return a + b;
+        return a * b;
     }
 }

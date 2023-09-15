@@ -20,7 +20,7 @@ uint32_t exports_docs_calculator_add_add(uint32_t a, uint32_t b)
 {
     ensure_dotnet_started();
 
-	MonoMethod* method = lookup_dotnet_method("my-project", "add", "addHelper", "Export_add", -1);
+	MonoMethod* method = lookup_dotnet_method("my-project", "Add", "AddHelper", "Export_Add", -1);
     void* method_params[] = { &a, &b };
     MonoObject* exception;
     MonoObject* result;
