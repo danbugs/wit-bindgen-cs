@@ -1,15 +1,16 @@
 # test locally
 dotnet run
 
-## requirements
-
-wasm-tools installed (currently requires build from master `cargo install wasm-tools --git https://github.com/bytecodealliance/wasm-tools --branch main`)
-
-## use as tool
+## Install as tool
 dotnet pack
 dotnet tool install --global --add-source ./nupkg csharp-component-generator
 export PATH="$PATH:/home/<your-name>/.dotnet/tools"
-dotnet component
+dotnet component --help
+
+# use it
+dotnet component init
+dotnet component generate --wit adder.wit
+dotnet component build --world adder --wit adder.wit --preview ../tutorial/wasi_snapshot_preview1.reactor.wasm
 
 ## update for test
 ./install-tool.sh
