@@ -1,8 +1,8 @@
-using Add;
+namespace Add;
 
-public class UserAdderImpl : IAdd
+public partial class Adder : IAdd
 {
-    public uint Add(uint a, uint b)
+    public static uint Add(uint a, uint b)
     {
         return a + b;
     }

@@ -43,6 +43,6 @@ jobs:
           (cd ./MyProject && dotnet component init)
           (cp ./Program.cs ./MyProject/Program.cs)
           (cd ./MyProject && dotnet component generate --wit ../adder.wit)
-          (cd ./MyProject &&  dotnet component build --world adder --wit ../adder.wit --preview ../wasi_snapshot_preview1.reactor.wasm)
+          (cd ./MyProject && dotnet component build --world adder --wit ../adder.wit --preview ../wasi_snapshot_preview1.reactor.wasm)
           ./build.sh
           wasmtime run --wasm-features component-model final.wasm 1 2 add
