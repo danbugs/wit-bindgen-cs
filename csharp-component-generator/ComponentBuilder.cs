@@ -28,7 +28,10 @@ public static class ComponentBuilder
                 Console.WriteLine(e.ToString());
             }
 
-            Console.WriteLine("Embedding world");
+            
+            var files = Directory.GetFiles(".", "*.csproj", SearchOption.TopDirectoryOnly);
+            var projectName = files.First().Split("/").Last().Split(".").First();
+            Console.WriteLine($"Embedding world {world} from {witFile} {projectName}.wasm");
             try
             {
                 using (Process myProcess = new Process())
@@ -37,7 +40,7 @@ public static class ComponentBuilder
                     // You can start any process, HelloWorld is a do-nothing example.
                     myProcess.StartInfo.FileName = "wasm-tools";
                     myProcess.StartInfo.CreateNoWindow = true;
-                    myProcess.StartInfo.Arguments = $"component embed --world {world} {witFile} bin/Debug/net8.0/wasi-wasm/AppBundle/Adder_CS.wasm -o main.embed.wasm";
+                    myProcess.StartInfo.Arguments = $"component embed --world {world} {witFile} bin/Debug/net8.0/wasi-wasm/AppBundle/{projectName}.wasm -o main.embed.wasm";
                     myProcess.Start();
 
                     myProcess.WaitForExit();

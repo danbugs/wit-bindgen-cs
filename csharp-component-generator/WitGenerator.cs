@@ -3,9 +3,9 @@ using System.Text.Json;
 
 public static class WitGenerator {
     
-public static Action<string, string> Command()
+public static Action<string> Command()
 {
-    return (witFile, projectName) =>
+    return (witFile) =>
     {
         Console.WriteLine($"Generating bindings with file {witFile}");
 
@@ -35,13 +35,16 @@ public static Action<string, string> Command()
 
                 // run command: wit-bindgen c ../tutorial/wit/calculator.wit --world {worldName}
                 myProcess.StartInfo.FileName = "wit-bindgen";
-                myProcess.StartInfo.Arguments = $"c ../tutorial/wit/calculator.wit --world {worldName}";
+                myProcess.StartInfo.Arguments = $"c {witFile} --world {worldName} --out-dir native/wit";
                 myProcess.Start();
                 myProcess.WaitForExit();
 
                 // generate c
+                var files = Directory.GetFiles(".", "*.csproj", SearchOption.TopDirectoryOnly);
+                var projectName = files.First().Split("/").Last().Split(".").First();
                 var c = jsonToC(json, worldName, projectName);
-                System.IO.File.WriteAllText(@"generated.c", c);
+                System.IO.Directory.CreateDirectory("native");
+                System.IO.File.WriteAllText(@"native/generated.c", c);
 
             }
         }
@@ -71,6 +74,7 @@ private static string jsonToCSharp(string json)
 
     var convertedTemplate =
 $@"
+// generated file
 namespace {interface0.Name};
 using System;
 using System.Linq;
@@ -138,6 +142,7 @@ private static string jsonToC(string json, string worldName, string projectName)
 
     var convertedTemplate =
 $@"
+// generated file
 #include <wasm/driver.h>
 #include ""{worldName}.h""
 #include <assert.h>

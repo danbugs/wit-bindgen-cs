@@ -1,0 +1,8 @@
+
+<Project>
+	<ItemGroup>
+		<_WasmNativeFileForLinking Include="$(MSBuildThisFileDirectory)\..\native\*.c" />
+        <_WasmNativeFileForLinking Include="$(MSBuildThisFileDirectory)\..\native\wit\*.c" />
+		<_WasiSdkClangArgs Include="-I&quot;$([System.String]::Copy('$(MSBuildThisFileDirectory)..\native\wit\').Replace('\','/'))&quot;" /> 
+	</ItemGroup>
+</Project>
