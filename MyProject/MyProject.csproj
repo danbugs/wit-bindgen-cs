@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <RuntimeIdentifier>wasi-wasm</RuntimeIdentifier>
     <WasmSingleFileBundle>true</WasmSingleFileBundle>
+    <PublishTrimmed>true</PublishTrimmed>
   </PropertyGroup>
   <Import Project="build\wasm.targets" />
 </Project>

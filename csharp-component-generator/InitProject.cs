@@ -91,6 +91,7 @@ $@"
             var propertyGroup = csprojXml.Elements("PropertyGroup").First();
             propertyGroup.Add(new XElement("RuntimeIdentifier", "wasi-wasm"));
             propertyGroup.Add(new XElement("WasmSingleFileBundle", "true"));
+            propertyGroup.Add(new XElement("PublishTrimmed", "true"));
 
             System.IO.File.WriteAllText(files.First(), csprojXml.ToString());
         };
