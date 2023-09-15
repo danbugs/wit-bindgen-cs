@@ -8,7 +8,7 @@ public static class InitProject {
         {
             Console.WriteLine("Initializing project");
 
-            Console.WriteLine("Installing dotnot wasi-experimental tools");
+            Console.WriteLine("Installing dotnet wasi-experimental tools");
             try
             {
                 using (Process myProcess = new Process())

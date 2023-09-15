@@ -16,7 +16,6 @@ public static class ComponentBuilder
                     myProcess.StartInfo.UseShellExecute = false;
                     myProcess.StartInfo.FileName = "dotnet";
                     myProcess.StartInfo.CreateNoWindow = true;
-                    //myProcess.StartInfo.RedirectStandardOutput = true;
                     myProcess.StartInfo.EnvironmentVariables["DOTNET_ROOT"] = "$HOME/dotnet";
                     myProcess.StartInfo.Arguments = "build";
                     myProcess.Start();
@@ -37,7 +36,6 @@ public static class ComponentBuilder
                 using (Process myProcess = new Process())
                 {
                     myProcess.StartInfo.UseShellExecute = false;
-                    // You can start any process, HelloWorld is a do-nothing example.
                     myProcess.StartInfo.FileName = "wasm-tools";
                     myProcess.StartInfo.CreateNoWindow = true;
                     myProcess.StartInfo.Arguments = $"component embed --world {world} {witFile} bin/Debug/net8.0/wasi-wasm/AppBundle/{projectName}.wasm -o main.embed.wasm";
@@ -57,7 +55,6 @@ public static class ComponentBuilder
                 using (Process myProcess = new Process())
                 {
                     myProcess.StartInfo.UseShellExecute = false;
-                    // You can start any process, HelloWorld is a do-nothing example.
                     myProcess.StartInfo.FileName = "wasm-tools";
                     myProcess.StartInfo.CreateNoWindow = true;
                     myProcess.StartInfo.Arguments = $"component new main.embed.wasm --adapt {previewfile} -o main.component.wasm";

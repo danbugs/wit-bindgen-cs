@@ -33,9 +33,7 @@ public static Action<string> Command()
                 var csharp = jsonToCSharp(json);
                 System.IO.File.WriteAllText($"{worldName.ToUpperFirstLetter()}.generated.cs", csharp);
 
-                
-
-                // run command: wit-bindgen c ../tutorial/wit/calculator.wit --world {worldName}
+                // run command: wit-bindgen c <wit-path> --world {worldName}
                 myProcess.StartInfo.FileName = "wit-bindgen";
                 myProcess.StartInfo.Arguments = $"c {witFile} --world {worldName} --out-dir native/wit";
                 myProcess.Start();
@@ -66,10 +64,8 @@ private static string jsonToCSharp(string json)
         PropertyNameCaseInsensitive = true,
     };
 
-    // go through json, only consider "interfaces".
     var jsonObj = JsonSerializer.Deserialize<Root>(json, options);
 
-    // for each interface, convert types to C# types.
     var interface0 = jsonObj.Interfaces[0];
     var function0 = interface0.Functions.GetValueOrDefault("add");
     var result0 = function0.Results[0];
@@ -126,23 +122,17 @@ private static string jsonToC(string json, string worldName, string projectName)
         PropertyNameCaseInsensitive = true,
     };
 
-    // go through json, only consider "interfaces".
     var jsonObj = JsonSerializer.Deserialize<Root>(json, options);
 
-    // for each interface, convert types to C# types.
     var interface0 = jsonObj.Interfaces[0];
     var function0 = interface0.Functions.GetValueOrDefault("add");
     var result0 = function0.Results[0];
 
     // package name will look like: "docs:calculator@0.1.0", need to get it as "docs_calculator"
     var packageName = jsonObj.Packages[0].Name;
-    Console.WriteLine(packageName);
     var packageNameSplit = packageName.Split(":");
-    Console.WriteLine(packageNameSplit);
     var packageNameSplit1 = packageNameSplit[1].Split("@");
-    Console.WriteLine(packageNameSplit1);
     var packageNameSplit2 = packageNameSplit[0] + "_" + packageNameSplit1[0];
-    Console.WriteLine(packageNameSplit2);
 
     var interfaceName = interface0.Name.ToUpperFirstLetter();
     var functionName = function0.Name.ToUpperFirstLetter();

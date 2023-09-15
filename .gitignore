@@ -397,5 +397,8 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-#rust
+# Rust
 **/**target
+
+# VSCode
+**/**.vscode/
