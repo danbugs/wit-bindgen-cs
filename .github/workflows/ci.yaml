@@ -34,6 +34,7 @@ jobs:
           sdkpath=$(pwd)/wasi-sdk-20.0
           echo "WASI_SDK_PATH=${sdkpath}" >> "$GITHUB_ENV"
           cargo install --git https://github.com/bytecodealliance/wasmtime --rev 134dddc wasmtime-cli --features component-model
+          cargo install --git https://github.com/bytecodealliance/cargo-component --rev 36c221e4 --locked cargo-component
       - name: Run Examples
         run: |
           (cd ./csharp-component-generator && ./install-tool.sh)

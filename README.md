@@ -15,12 +15,14 @@ One of our main focuses was the developer experience, where we hoped to integrat
     - Verify that `dotnet --version` tells you it's .NET 8 Preview 4 or later
 - WASI SDK
     - Download from [wasi-sdk releases page](https://github.com/WebAssembly/wasi-sdk/releases). If you're using Windows, you need the one with `mingw` in its name.
+      - `curl -LO https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sdk-20.0-linux.tar.gz`
     - Create an environment variable called `WASI_SDK_PATH` giving the path where you extracted the WASI SDK download, i.e., the directory containing `bin`/`lib`/`share`.
 - Rust tooling (i.e., cargo, cargo component, etc.) for demo. purposes.
     - Install from [rustup.rs](https://rustup.rs/)
     - Install from [cargo-component](https://github.com/bytecodealliance/cargo-component.git)
+      - `cargo install --git https://github.com/bytecodealliance/cargo-component --rev 36c221e4 --locked cargo-component``
 - wasmtime 13.0.0
-    - Install from [here](https://github.com/bytecodealliance/wasmtime/commit/134dddc) by running `git submodule update --init && cargo build --features component-model` (don't forget git submodule update --init).
+    - Install from [1234dddc commit](https://github.com/bytecodealliance/wasmtime/commit/134dddc) by running `cargo install --git https://github.com/bytecodealliance/wasmtime --rev 134dddc wasmtime-cli --features component-model`
 
 
 > Note: 
