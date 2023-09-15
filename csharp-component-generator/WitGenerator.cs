@@ -26,12 +26,14 @@ public static Action<string> Command()
 
                 string json = myProcess.StandardOutput.ReadToEnd();
 
-                // generate csharp
-                var csharp = jsonToCSharp(json);
-                System.IO.File.WriteAllText(@"Generated.cs", csharp);
-
                 // get world name from wit file name
                 var worldName = witFileName.Split(".")[0];
+
+                // generate csharp
+                var csharp = jsonToCSharp(json);
+                System.IO.File.WriteAllText($"{worldName.ToUpperFirstLetter()}.generated.cs", csharp);
+
+                
 
                 // run command: wit-bindgen c ../tutorial/wit/calculator.wit --world {worldName}
                 myProcess.StartInfo.FileName = "wit-bindgen";
@@ -44,7 +46,7 @@ public static Action<string> Command()
                 var projectName = files.First().Split("/").Last().Split(".").First();
                 var c = jsonToC(json, worldName, projectName);
                 System.IO.Directory.CreateDirectory("native");
-                System.IO.File.WriteAllText(@"native/generated.c", c);
+                System.IO.File.WriteAllText($"native/{worldName}.generated.c", c);
 
             }
         }
