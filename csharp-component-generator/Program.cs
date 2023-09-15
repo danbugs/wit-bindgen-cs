@@ -220,10 +220,88 @@ generate.AddOption(projectNameOption);
 
 rootCommand.Add(generate);
 
+var build = new Command("build", "build a component");
+var worldOption = new Option<string>
+    (name: "--world",
+    description: "world");
+var previewOption = new Option<string>
+    (name: "--preview",
+    description: "preview");
+build.AddOption(witFileOption);
+build.AddOption(worldOption);
+build.AddOption(previewOption);
+rootCommand.Add(build);
+
+
 rootCommand.SetHandler(() =>
 {
     Console.WriteLine("Dotnet Component Generator.  Use --help for more information.");
 });
+
+build.SetHandler((world, witFile, previewfile) =>
+{
+    Console.WriteLine("Building component");
+
+    Console.WriteLine("Building dotnet wasm");
+    try
+    {
+        using (Process myProcess = new Process())
+        {
+            myProcess.StartInfo.UseShellExecute = false;
+            myProcess.StartInfo.FileName = "dotnet";
+            myProcess.StartInfo.CreateNoWindow = true;
+            //myProcess.StartInfo.RedirectStandardOutput = true;
+            myProcess.StartInfo.EnvironmentVariables["DOTNET_ROOT"] = "$HOME/dotnet";
+            myProcess.StartInfo.Arguments = "build";
+            myProcess.Start();
+            myProcess.WaitForExit();
+        }
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.ToString());
+    }
+
+    Console.WriteLine("Embedding world");
+    try
+    {
+        using (Process myProcess = new Process())
+        {
+            myProcess.StartInfo.UseShellExecute = false;
+            // You can start any process, HelloWorld is a do-nothing example.
+            myProcess.StartInfo.FileName = "wasm-tools";
+            myProcess.StartInfo.CreateNoWindow = true;
+            myProcess.StartInfo.Arguments = $"component embed --world {world} {witFile} bin/Debug/net8.0/wasi-wasm/AppBundle/Adder_CS.wasm -o main.embed.wasm";
+            myProcess.Start();
+
+            myProcess.WaitForExit();
+        }
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+    }
+
+    Console.WriteLine("Building component");
+    try
+    {
+        using (Process myProcess = new Process())
+        {
+            myProcess.StartInfo.UseShellExecute = false;
+            // You can start any process, HelloWorld is a do-nothing example.
+            myProcess.StartInfo.FileName = "wasm-tools";
+            myProcess.StartInfo.CreateNoWindow = true;
+            myProcess.StartInfo.Arguments = $"component new main.embed.wasm --adapt {previewfile} -o main.component.wasm";
+            myProcess.Start();
+
+            myProcess.WaitForExit();
+        }
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+    }
+}, worldOption, witFileOption, previewOption);
 
 generate.SetHandler((witFile, projectName) =>
 {
