@@ -33,7 +33,6 @@ public static class InitProject {
                 using (Process myProcess = new Process())
                 {
                     myProcess.StartInfo.UseShellExecute = false;
-                    // You can start any process, HelloWorld is a do-nothing example.
                     myProcess.StartInfo.FileName = "cargo";
                     myProcess.StartInfo.CreateNoWindow = true;
                     myProcess.StartInfo.Arguments = "install --git https://github.com/bytecodealliance/wit-bindgen wit-bindgen-cli";
@@ -53,7 +52,6 @@ public static class InitProject {
                 using (Process myProcess = new Process())
                 {
                     myProcess.StartInfo.UseShellExecute = false;
-                    // You can start any process, HelloWorld is a do-nothing example.
                     myProcess.StartInfo.FileName = "cargo";
                     myProcess.StartInfo.CreateNoWindow = true;
                     myProcess.StartInfo.Arguments = "install wasm-tools --git https://github.com/bytecodealliance/wasm-tools --branch main";
