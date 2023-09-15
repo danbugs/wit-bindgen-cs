@@ -85,15 +85,12 @@ public interface I{interfaceName}
     static abstract {witToCSharpType(result0.Type)} {functionName}({witToCSharpType(function0.Params[0].Type)} {function0.Params[0].Name}, {witToCSharpType(function0.Params[1].Type)} {function0.Params[1].Name});
 }}
 
-public partial class {worldName.ToUpperFirstLetter()} : I{interfaceName}
-{{
+public class Entrypoint() {{ 
+    // required blank _entry for .net wasm 
     public static void Main() {{ }}
-
-    public static {witToCSharpType(result0.Type)} Export_{functionName}({witToCSharpType(function0.Params[0].Type)} {function0.Params[0].Name}, {witToCSharpType(function0.Params[1].Type)} {function0.Params[1].Name})
-    {{
-        return {worldName.ToUpperFirstLetter()}.{functionName}({function0.Params[0].Name}, {function0.Params[1].Name});
-    }}
 }}
+
+public partial class {worldName.ToUpperFirstLetter()} {{ }}
 ";
 
     return convertedTemplate;
@@ -144,7 +141,7 @@ void ensure_dotnet_started() {{
 {{
     ensure_dotnet_started();
 
-	MonoMethod* method = lookup_dotnet_method(""{projectName}"", ""{interfaceName}"", ""{worldName.ToUpperFirstLetter()}"", ""Export_{functionName}"", -1);
+	MonoMethod* method = lookup_dotnet_method(""{projectName}"", ""{interfaceName}"", ""{worldName.ToUpperFirstLetter()}"", ""{functionName}"", -1);
     void* method_params[] = {{ &{function0.Params[0].Name}, &{function0.Params[1].Name} }};
     MonoObject* exception;
     MonoObject* result;
