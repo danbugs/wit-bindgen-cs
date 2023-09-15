@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        env:
+          RUST_CACHE_KEY_OS: ${{ matrix.os }}
+        with:
+          rustflags: ''
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+          dotnet-quality: 'preview'
+      - name: Install deps
+        run: |
+          curl -LO https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-20/wasi-sdk-20.0-linux.tar.gz
+          tar xvf wasi-sdk-20.0-linux.tar.gz
+          sdkpath=$(pwd)/wasi-sdk-20.0
+          echo "WASI_SDK_PATH=${sdkpath}" >> "$GITHUB_ENV"
+          cargo install --git https://github.com/bytecodealliance/wasmtime --rev 134dddc wasmtime-cli --features component-model
+          cargo install --git https://github.com/bytecodealliance/cargo-component --rev 36c221e4 --locked cargo-component
+      - name: Run Examples
+        run: |
+          (cd ./csharp-component-generator && ./install-tool.sh)
+          rm -rf MyProject
+          mkdir MyProject
+          (cd ./MyProject && dotnet new console)
+          (cd ./MyProject && dotnet component init)
+          (cp ./Program.cs ./MyProject/Program.cs)
+          (cd ./MyProject && dotnet component generate --wit ../adder.wit)
+          (cd ./MyProject && dotnet component build --world adder --wit ../adder.wit --preview ../wasi_snapshot_preview1.reactor.wasm)
+          ./build.sh
+          wasmtime run --wasm-features component-model final.wasm 1 2 add
