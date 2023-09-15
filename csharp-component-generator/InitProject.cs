@@ -35,7 +35,7 @@ public static class InitProject {
                     myProcess.StartInfo.UseShellExecute = false;
                     myProcess.StartInfo.FileName = "cargo";
                     myProcess.StartInfo.CreateNoWindow = true;
-                    myProcess.StartInfo.Arguments = "install --git https://github.com/bytecodealliance/wit-bindgen wit-bindgen-cli";
+                    myProcess.StartInfo.Arguments = "install --git https://github.com/bytecodealliance/wit-bindgen wit-bindgen-cli  --version 0.11.0";
                     myProcess.Start();
 
                     myProcess.WaitForExit();
@@ -47,6 +47,7 @@ public static class InitProject {
             }
 
             Console.WriteLine("Installing wasm-tools");
+            // requires https://github.com/bytecodealliance/wasm-tools/pull/1203 so pinned to a specific commit
             try
             {
                 using (Process myProcess = new Process())
@@ -54,7 +55,7 @@ public static class InitProject {
                     myProcess.StartInfo.UseShellExecute = false;
                     myProcess.StartInfo.FileName = "cargo";
                     myProcess.StartInfo.CreateNoWindow = true;
-                    myProcess.StartInfo.Arguments = "install wasm-tools --git https://github.com/bytecodealliance/wasm-tools --branch main";
+                    myProcess.StartInfo.Arguments = "install wasm-tools --git https://github.com/bytecodealliance/wasm-tools --rev 49753602683a539b66d0a65ffa11acb402f148bb";
                     myProcess.Start();
 
                     myProcess.WaitForExit();
