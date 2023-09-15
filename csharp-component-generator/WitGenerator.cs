@@ -30,7 +30,7 @@ public static Action<string> Command()
                 var worldName = witFileName.Split(".")[0];
 
                 // generate csharp
-                var csharp = jsonToCSharp(json);
+                var csharp = jsonToCSharp(json, worldName);
                 System.IO.File.WriteAllText($"{worldName.ToUpperFirstLetter()}.generated.cs", csharp);
 
                 // run command: wit-bindgen c <wit-path> --world {worldName}
@@ -57,7 +57,7 @@ public static Action<string> Command()
 
 // function that takes JSON output and generates C# code
 // - for now, we'll parse interfaces – anything else is out of scope.
-private static string jsonToCSharp(string json)
+private static string jsonToCSharp(string json, string worldName)
 {
     var options = new JsonSerializerOptions
     {
@@ -82,31 +82,16 @@ using System.Reflection;
 
 public interface I{interfaceName}
 {{
-    {witToCSharpType(result0.Type)} {functionName}({witToCSharpType(function0.Params[0].Type)} {function0.Params[0].Name}, {witToCSharpType(function0.Params[1].Type)} {function0.Params[1].Name});
+    static abstract {witToCSharpType(result0.Type)} {functionName}({witToCSharpType(function0.Params[0].Type)} {function0.Params[0].Name}, {witToCSharpType(function0.Params[1].Type)} {function0.Params[1].Name});
 }}
 
-public static class {interfaceName}Helper
+public partial class {worldName.ToUpperFirstLetter()} : I{interfaceName}
 {{
-    private static I{interfaceName} _currentImplementation;
-
     public static void Main() {{ }}
-
-    static {interfaceName}Helper()
-    {{
-        Type {interfaceName}Type = Assembly.GetExecutingAssembly().GetTypes()
-                                .FirstOrDefault(t => t.GetInterface(""I{interfaceName}"") != null && !t.IsInterface && !t.IsAbstract);
-        if ({interfaceName}Type != null)
-        {{
-            _currentImplementation = (I{interfaceName})Activator.CreateInstance({interfaceName}Type);
-        }}
-    }}
 
     public static {witToCSharpType(result0.Type)} Export_{functionName}({witToCSharpType(function0.Params[0].Type)} {function0.Params[0].Name}, {witToCSharpType(function0.Params[1].Type)} {function0.Params[1].Name})
     {{
-        if (_currentImplementation == null)
-            throw new InvalidOperationException(""No implementation found for I{interfaceName}."");
-
-        return _currentImplementation.{functionName}({function0.Params[0].Name}, {function0.Params[1].Name});
+        return {worldName.ToUpperFirstLetter()}.{functionName}({function0.Params[0].Name}, {function0.Params[1].Name});
     }}
 }}
 ";
@@ -159,7 +144,7 @@ void ensure_dotnet_started() {{
 {{
     ensure_dotnet_started();
 
-	MonoMethod* method = lookup_dotnet_method(""{projectName}"", ""{interfaceName}"", ""{interfaceName}Helper"", ""Export_{functionName}"", -1);
+	MonoMethod* method = lookup_dotnet_method(""{projectName}"", ""{interfaceName}"", ""{worldName.ToUpperFirstLetter()}"", ""Export_{functionName}"", -1);
     void* method_params[] = {{ &{function0.Params[0].Name}, &{function0.Params[1].Name} }};
     MonoObject* exception;
     MonoObject* result;
