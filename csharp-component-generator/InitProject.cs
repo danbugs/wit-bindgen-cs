@@ -14,10 +14,18 @@ public static class InitProject {
                 using (Process myProcess = new Process())
                 {
                     myProcess.StartInfo.UseShellExecute = false;
-                    myProcess.StartInfo.FileName = "dotnet";
                     myProcess.StartInfo.CreateNoWindow = true;
-                    myProcess.StartInfo.EnvironmentVariables["DOTNET_ROOT"] = "$HOME/dotnet";
+                    var dotnetRoot = Environment.GetEnvironmentVariable("DOTNET_ROOT");
+                    if (dotnetRoot == null) {
+                        dotnetRoot = "$HOME/dotnet";
+                    }
+                    myProcess.StartInfo.EnvironmentVariables["DOTNET_ROOT"] = dotnetRoot;
+                    myProcess.StartInfo.FileName = "dotnet";
                     myProcess.StartInfo.Arguments = "workload install wasi-experimental";
+                    if (dotnetRoot.StartsWith("/usr")) {
+                        myProcess.StartInfo.Arguments = myProcess.StartInfo.FileName + " " + myProcess.StartInfo.Arguments;
+                        myProcess.StartInfo.FileName = "sudo";
+                    }
                     myProcess.Start();
                     myProcess.WaitForExit();
                 }
@@ -35,7 +43,7 @@ public static class InitProject {
                     myProcess.StartInfo.UseShellExecute = false;
                     myProcess.StartInfo.FileName = "cargo";
                     myProcess.StartInfo.CreateNoWindow = true;
-                    myProcess.StartInfo.Arguments = "install --git https://github.com/bytecodealliance/wit-bindgen wit-bindgen-cli  --version 0.11.0";
+                    myProcess.StartInfo.Arguments = "install --git https://github.com/bytecodealliance/wit-bindgen wit-bindgen-cli  --rev 15907098ddfb8332359d614bb391cbc0d9dd19e9";
                     myProcess.Start();
 
                     myProcess.WaitForExit();
