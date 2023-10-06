@@ -12,8 +12,12 @@ var witFileOption = new Option<string>
     (name: "--wit",
     description: "path to wit file");
 generate.AddOption(witFileOption);
+var witWorldOption = new Option<string>
+    (name: "--world",
+    description: "The name of the world to use");
+generate.AddOption(witWorldOption);
 rootCommand.Add(generate);
-generate.SetHandler(WitGenerator.Command(), witFileOption);
+generate.SetHandler(WitGenerator.Command(), witFileOption, witWorldOption);
 
 // Build command and options
 var build = new Command("build", "build a component");
