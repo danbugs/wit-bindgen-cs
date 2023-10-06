@@ -1,11 +1,12 @@
 using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 
 public static class WitGenerator {
     
-public static Action<string> Command()
+public static Action<string, string> Command()
 {
-    return (witFile) =>
+    return (witFile, witWorld) =>
     {
         Console.WriteLine($"Generating bindings with file {witFile}");
 
@@ -22,13 +23,22 @@ public static Action<string> Command()
                 myProcess.StartInfo.Arguments = $"component wit --json {witFile}";
                 myProcess.StartInfo.RedirectStandardOutput = true;
                 myProcess.Start();
+                var builder = new StringBuilder();
+                while (!myProcess.StandardOutput.EndOfStream)
+                {
+                    var line = myProcess.StandardOutput.ReadLine();
+                    builder.AppendLine(line);
+                }
                 myProcess.WaitForExit();
+                Console.WriteLine("wasm-tools done.");
 
-                string json = myProcess.StandardOutput.ReadToEnd();
+                string json = builder.ToString();
 
-                // get world name from wit file name
-                var worldName = witFileName.Split(".")[0];
-
+                var worldName = witWorld;
+                if (worldName == null || worldName.Length == 0) {
+                    // get world name from wit file name if it isn't specified
+                    worldName = witFileName.Split(".")[0];
+                }
                 // generate csharp
                 var csharp = jsonToCSharp(json, worldName);
                 System.IO.File.WriteAllText($"{worldName.ToUpperFirstLetter()}.generated.cs", csharp);
@@ -38,6 +48,7 @@ public static Action<string> Command()
                 myProcess.StartInfo.Arguments = $"c {witFile} --world {worldName} --out-dir native/wit";
                 myProcess.Start();
                 myProcess.WaitForExit();
+                Console.WriteLine("wit-bindgen done");
 
                 // generate c
                 var files = Directory.GetFiles(".", "*.csproj", SearchOption.TopDirectoryOnly);
@@ -45,7 +56,7 @@ public static Action<string> Command()
                 var c = jsonToC(json, worldName, projectName);
                 System.IO.Directory.CreateDirectory("native");
                 System.IO.File.WriteAllText($"native/{worldName}.generated.c", c);
-
+                Console.WriteLine("csharp generation done");
             }
         }
         catch (Exception e)
